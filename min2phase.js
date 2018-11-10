@@ -21,15 +21,6 @@ var min2phase = (function() {
 
 		this.nodeUD = [];
 
-		this.conjMask;
-		this.urfIdx;
-		this.length1;
-		this.depth1;
-		this.sol;
-		this.probe;
-		this.probeMax;
-		this.probeMin;
-		this.verbose;
 		this.valid1 = 0;
 		this.allowShorter = false;
 		this.cc = new CubieCube();
@@ -1359,12 +1350,55 @@ var min2phase = (function() {
 		var cc = new CubieCube().initCoord(cp, co, ep, eo);
 		return cc.toFaceCube();
 	}
+
+	function fromScramble(s) {
+		var j = 0;
+		var axis = -1;
+		var c1 = new CubieCube();
+		var c2 = new CubieCube();
+		for (var i = 0; i < s.length; i++) {
+			switch (s[i]) {
+				case 'U':
+				case 'R':
+				case 'F':
+				case 'D':
+				case 'L':
+				case 'B':
+					axis = "URFDLB".indexOf(s[i]) * 3;
+					break;
+				case ' ':
+					if (axis != -1) {
+						CubieCube.CornMult(c1, moveCube[axis], c2);
+						CubieCube.EdgeMult(c1, moveCube[axis], c2);
+						c1.init(c2.ca, c2.ea);
+					}
+					axis = -1;
+					break;
+				case '2':
+					axis++;
+					break;
+				case '\'':
+					axis += 2;
+					break;
+				default:
+					continue;
+			}
+		}
+		if (axis != -1) {
+			CubieCube.CornMult(c1, moveCube[axis], c2);
+			CubieCube.EdgeMult(c1, moveCube[axis], c2);
+			c1.init(c2.ca, c2.ea);
+		}
+		return c2.toFaceCube();
+	}
+
 	return {
 		Search: Search,
 		solve: function(facelet) {
 			return new Search().solution(facelet);
 		},
 		randomCube: randomCube,
+		fromScramble: fromScramble,
 		initFull: function() {
 			PARTIAL_INIT_LEVEL = 0;
 			initPrunTables();

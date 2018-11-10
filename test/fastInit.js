@@ -1,3 +1,4 @@
+var assert = require('assert');
 var min2phase = require('../min2phase.js');
 
 const {
@@ -5,9 +6,10 @@ const {
 	performance
 } = require('perf_hooks');
 
-var start = performance.now();
 var search = new min2phase.Search();
-start = performance.now();
+var state = min2phase.randomCube();
+var start = performance.now();
 console.log('Randomly solve a cube without initialization...');
-console.log(min2phase.solve(min2phase.randomCube()));
+var solution = search.solution(state, 21, 1e9, 50, 2);
+assert(min2phase.fromScramble(solution) == state);
 console.log('Done in ', performance.now() - start, 'ms');

@@ -1,3 +1,4 @@
+var assert = require('assert');
 var min2phase = require('../min2phase.js');
 
 const {
@@ -14,6 +15,7 @@ start = performance.now();
 var ntest = 1000;
 for (var i = 0; i < ntest; i++) {
 	var cube = min2phase.randomCube();
-	var ret = search.solution(cube, 21);
+	var solution = search.solution(cube, 21, 1e9, 0, 2);
+	assert(min2phase.fromScramble(solution) == cube);
 }
 console.log('Done. Average: ', (performance.now() - start) / ntest, 'ms');
