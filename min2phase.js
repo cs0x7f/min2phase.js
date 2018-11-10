@@ -735,11 +735,11 @@ var min2phase = (function() {
 					continue;
 				}
 				if (this.phase1PreMoves(this.maxPreMoves, -30, this.urfCubieCube[this.urfIdx], 0) == 0) {
-					return this.moveSol.length == 0 ? "Error 8" : this.solutionToString();
+					return this.moveSol == null ? "Error 8" : this.moveSol;
 				}
 			}
 		}
-		return this.moveSol == null ? "Error 7" : this.solutionToString();
+		return this.moveSol == null ? "Error 7" : this.moveSol;
 	}
 
 	Search.prototype.initPhase2Pre = function() {
@@ -801,6 +801,7 @@ var min2phase = (function() {
 				this.appendSolMove(this.preMoves[i]);
 			}
 			this.sol = this.moveSol.length;
+			this.moveSol = this.solutionToString();
 		}
 		if (depth2 != maxDep2 - 1) { //At least one solution has been found.
 			return this.probe >= this.probeMin ? 0 : 1;
