@@ -15,6 +15,7 @@ function testCanonicalMoves(maxl, prevMoves, lm, search) {
 	if (maxl == 0) {
 		var state = min2phase.fromScramble(prevMoves);
 		var solution = search.solution(state, 21, 1e9, 0, 2);
+		assert(min2phase.fromScramble(solution) == state);
 		while (solution.length > prevMoves.length) { // continue search until the optimal solution is found
 			solution = search.next(1e9, 0, 2);
 			assert(min2phase.fromScramble(solution) == state);
