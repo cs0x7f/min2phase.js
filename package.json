@@ -4,7 +4,7 @@
   "description": "A fast rubiks cube solver",
   "main": "min2phase.js",
   "scripts": {
-    "test": "node test/randSolv.js && echo && node test/fastInit.js"
+    "test": "node test/randSolv.js && echo && node test/fastInit.js && echo && node test/selectedStateTest.js"
   },
   "repository": {
     "type": "git",

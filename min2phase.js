@@ -633,13 +633,22 @@ var min2phase = (function() {
 	}
 
 	Search.prototype.next = function(probeMax, probeMin, verbose) {
+		if (probeMax === undefined) {
+			probeMax = 1e9;
+		}
+		if (probeMin === undefined) {
+			probeMin = 0;
+		}
+		if (verbose === undefined) {
+			verbose = 0;
+		}
 		this.probe = 0;
 		this.probeMax = probeMax;
 		this.probeMin = Math.min(probeMin, probeMax);
 		this.moveSol = null;
 		this.isRec = true;
 		this.verbose = verbose;
-		return search();
+		return this.search();
 	}
 
 	Search.prototype.verify = function(facelets) {
