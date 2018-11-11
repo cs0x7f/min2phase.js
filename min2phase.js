@@ -777,11 +777,16 @@ var min2phase = (function() {
 		var p2esym = p2edge & 0xf;
 		p2edge >>= 4;
 		var p2mid = phase2Cubie.getMPerm();
+		var p2edgei = getPermSymInv(p2edge, p2esym, false);
+		var p2corni = getPermSymInv(p2corn, p2csym, true);
 		var prun = Math.max(
+			getPruningMax(MCPermPrunMax, MCPermPrun,
+				p2corn * N_MPERM + MPermConj[p2mid][p2csym]),
 			getPruningMax(EPermCCombPPrunMax, EPermCCombPPrun,
 				p2edge * N_COMB + CCombPConj[Perm2CombP[p2corn] & 0xff][SymMultInv[p2esym][p2csym]]),
-			getPruningMax(MCPermPrunMax, MCPermPrun,
-				p2corn * N_MPERM + MPermConj[p2mid][p2csym]));
+			getPruningMax(EPermCCombPPrunMax, EPermCCombPPrun,
+				(p2edgei >> 4) * N_COMB + CCombPConj[Perm2CombP[p2corni >> 4] & 0xff][SymMultInv[p2edgei & 0xf][p2corni & 0xf]])
+		);
 		var maxDep2 = Math.min(MAX_DEPTH2, this.sol - this.length1);
 		if (prun >= maxDep2) {
 			return prun > maxDep2 ? 2 : 1;
@@ -902,24 +907,29 @@ var min2phase = (function() {
 			var cornx = CPermMove[corn][SymMoveUD[csym][m]];
 			var csymx = SymMult[cornx & 0xf][csym];
 			cornx >>= 4;
-			if (getPruningMax(MCPermPrunMax, MCPermPrun,
-					cornx * N_MPERM + MPermConj[midx][csymx]) >= maxl) {
-				continue;
-			}
 			var edgex = EPermMove[edge][SymMoveUD[esym][m]];
 			var esymx = SymMult[edgex & 0xf][esym];
 			edgex >>= 4;
-			if (getPruningMax(EPermCCombPPrunMax, EPermCCombPPrun,
-					edgex * N_COMB + CCombPConj[Perm2CombP[cornx] & 0xff][SymMultInv[esymx][csymx]]) >= maxl) {
-				continue;
-			}
 			var edgei = getPermSymInv(edgex, esymx, false);
 			var corni = getPermSymInv(cornx, csymx, true);
-			if (getPruningMax(EPermCCombPPrunMax, EPermCCombPPrun,
-					(edgei >> 4) * N_COMB + CCombPConj[Perm2CombP[corni >> 4] & 0xff][SymMultInv[edgei & 0xf][corni & 0xf]]) >= maxl) {
+			var prun = getPruningMax(EPermCCombPPrunMax, EPermCCombPPrun,
+				(edgei >> 4) * N_COMB + CCombPConj[Perm2CombP[corni >> 4] & 0xff][SymMultInv[edgei & 0xf][corni & 0xf]]);
+			if (prun > maxl + 1) {
+				break;
+			} else if (prun >= maxl) {
+				m += 0x42 >> m & 3 & (maxl - prun);
 				continue;
 			}
-
+			prun = Math.max(
+				getPruningMax(EPermCCombPPrunMax, EPermCCombPPrun,
+					edgex * N_COMB + CCombPConj[Perm2CombP[cornx] & 0xff][SymMultInv[esymx][csymx]]),
+				getPruningMax(MCPermPrunMax, MCPermPrun,
+					cornx * N_MPERM + MPermConj[midx][csymx])
+			);
+			if (prun >= maxl) {
+				m += 0x42 >> m & 3 & (maxl - prun);
+				continue;
+			}
 			var ret = this.phase2(edgex, esymx, cornx, csymx, midx, maxl - 1, depth + 1, m);
 			if (ret >= 0) {
 				this.move[depth] = ud2std[m];
