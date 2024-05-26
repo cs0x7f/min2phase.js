@@ -15,7 +15,7 @@ start = performance.now();
 var ntest = 1000;
 for (var i = 0; i < ntest; i++) {
 	var cube = min2phase.randomCube();
-	var solution = search.solution(cube, 21, 1e9, 0, 2);
+	var solution = search.solution(cube, 21, 1e9, 0, min2phase.INVERSE_SOLUTION);
 	assert(min2phase.fromScramble(solution) == cube);
 }
 console.log('Done. Average: ', (performance.now() - start) / ntest, 'ms');

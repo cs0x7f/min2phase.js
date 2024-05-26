@@ -14,10 +14,10 @@ console.log('Initialization Time: ', (performance.now() - start), 'ms');
 function testCanonicalMoves(maxl, prevMoves, lm, search) {
 	if (maxl == 0) {
 		var state = min2phase.fromScramble(prevMoves);
-		var solution = search.solution(state, 21, 1e9, 0, 2);
+		var solution = search.solution(state, 21, 1e9, 0, min2phase.INVERSE_SOLUTION);
 		assert(min2phase.fromScramble(solution) == state);
 		while (solution.length > prevMoves.length) { // continue search until the optimal solution is found
-			solution = search.next(1e9, 0, 2);
+			solution = search.next(1e9, 0, min2phase.INVERSE_SOLUTION);
 			assert(min2phase.fromScramble(solution) == state);
 		}
 		return 1;
