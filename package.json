@@ -1,6 +1,6 @@
 {
   "name": "min2phase.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A fast rubiks cube solver",
   "main": "min2phase.js",
   "scripts": {
